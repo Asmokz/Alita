@@ -1,0 +1,20 @@
+# Fichier .gitignore
+.env
+venv/
+__pycache__/
+core/__pycache__/
+functions/__pycache__/ 
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.sqlite3
+.DS_Store
+*.db
+*.mp3
+*.wav
+.idea/
+.vscode/
+resources/temp/
+resources/Alita_fr_windows_v3_0_0.zip
+models/

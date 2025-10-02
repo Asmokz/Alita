@@ -1,0 +1,7 @@
+chrome: chrome
+spotify: C:/Users/colin/AppData/Roaming/Spotify/Spotify.exe
+youtube: https://www.youtube.com
+discord: C:/Users/colin/AppData/Local/Discord/Update.exe --processStart Discord.exe
+
+# Bundle pour lancer plusieurs applications
+bundle:trinity: chrome,spotify,discord
