@@ -7,6 +7,7 @@ import whisper
 import time
 import threading
 import sys
+from core.n8n import send_to_n8n
 from core.record import record_and_transcribe
 from core.detect import listen_for_wake_word, MODEL_PATH, ACCESS_KEY, KEYWORD_FILE_PATH
 from functions.weather import get_weather
@@ -142,50 +143,12 @@ class AlitaAssistant:
                 speak(f"Erreur lors de l'ouverture de l'application : {e}")
 
         elif intent == "spotify":
-            query = None
-            action = None
-            if "lance" in command:
-                action = "play"
-                query = entities.get("track") or entities.get("artist")
-            elif "mets" in command:
-                action = "play"
-                query = entities.get("track") or entities.get("artist")
-            elif "pause" in command:
-                action = "pause"
-            elif "reprends" in command or "reprendre" in command:
-                action = "resume"
-            elif "suivant" in command or "passe" in command:
-                action = "next"
-            elif "précédent" in command or "precedent" in command:
-                action = "prev"
-            elif "volume" in command:
-                import re
-                m = re.search(r'(\d{1,3})', command)
-                if m:
-                    msg = spc.set_volume(int(m.group(1)))
-                    self.gui.update_state("speaking", msg)
-                    speak(msg)
-                    return
-                else:
-                    self.gui.update_state("speaking", "Donne-moi un pourcentage de 0 à 100.")
-                    speak("Donne-moi un pourcentage de 0 à 100.")
-                    return
+            # Envoi à n8n
+            n8n_response = send_to_n8n(result)
+            print("Réponse de n8n :", n8n_response)
 
-            if action == "play" and query:
-                msg = spc.play_query(query)
-            elif action == "pause":
-                msg = spc.pause()
-            elif action == "resume":
-                msg = spc.resume()
-            elif action == "next":
-                msg = spc.next()
-            elif action == "prev":
-                msg = spc.prev()
-            else:
-                msg = "Je n'ai pas compris la commande Spotify."
-
-            self.gui.update_state("speaking", msg)
-            speak(msg)
+            self.gui.update_state("speaking", n8n_response)
+            speak(n8n_response)
 
         elif intent == "time":
             heure = time.strftime("%H:%M")
